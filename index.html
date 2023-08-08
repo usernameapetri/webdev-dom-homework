@@ -49,7 +49,6 @@
       return formattedDate;
     };
 
-    let tempura = "";
     const nameInput = document.getElementById("nameInput");
     const commentInput = document.getElementById("commentInput");
     const remuveButton = document.getElementById("remuveButton");
@@ -97,11 +96,10 @@
       event.stopPropagation();
       const index = event.target.dataset.edit;
       const comment = commentListener[index];
-      tempura = document.querySelector(".edit-input");
-      console.log(tempura);
-      if (tempura) {
-        commentListener[index].editText = tempura.value;
-        commentListener[index].Text = tempura.value;
+      const select = document.querySelector(".edit-input");
+      if (select) {
+        commentListener[index].editText = select.value;
+        commentListener[index].Text = select.value;
         console.log(commentListener[index]);
       }
       if (!comment.isEdit) {
@@ -113,8 +111,7 @@
     };
 
     const commentTextElement = (event) => {
-      event.stopPropagation();
-      const index = event.target.dataset.text;
+      const index = event.target.dataset.coment;
       const comment = commentListener[index];
       commentInput.value =
         ">" +
@@ -131,16 +128,18 @@
           if (comment.like === true) {
             comment.like = "-active-like";
           }
-          return `<li class="comment">
+          return `<li class="comment" data-coment=${index} >
           <div class="comment-header">
-            <div>${comment.name}</div>
-            <div>${comment.date}</div>
+            <div data-coment=${index}>${comment.name}</div>
+            <div data-coment=${index}>${comment.date}</div>
           </div>
           <div class="comment-body">
             ${
               comment.isEdit
-                ? `<div class="comment-text" data-text=${index}>
+                ? `<div class="comment-text" data-coment=${index} data-text=${index}>
               ${comment.Text}
+            </div> <div class="comment-text pl" data-coment=${index} data-text=${index}>
+               
             </div>`
                 : `<textarea
           type="textarea"
@@ -156,7 +155,9 @@
               ${comment.isEdit ? "Редактировать" : "Сохранить"}
             </button>
             <div class="likes">
-              <span class="likes-counter">${comment.numOfLike}</span>
+              <span class="likes-counter" data-coment=${index}>${
+            comment.numOfLike
+          }</span>
               <button class="like-button ${
                 comment.like
               } " data-index="${index}"></button>
@@ -172,7 +173,7 @@
         button.addEventListener("click", handleLike);
       });
 
-      const eventClickText = document.querySelectorAll(".comment-text");
+      const eventClickText = document.querySelectorAll(".comment");
       eventClickText.forEach((button) => {
         button.addEventListener("click", commentTextElement);
       });
