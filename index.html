@@ -136,11 +136,9 @@
           <div class="comment-body">
             ${
               comment.isEdit
-                ? `<div class="comment-text" data-coment=${index} data-text=${index}>
+                ? `<div class="comment-text" style="white-space:pre-line" data-coment=${index} data-text=${index}>
               ${comment.Text}
-            </div> <div class="comment-text pl" data-coment=${index} data-text=${index}>
-               
-            </div>`
+            </div> `
                 : `<textarea
           type="textarea"
           class="add-form-text edit-input"
