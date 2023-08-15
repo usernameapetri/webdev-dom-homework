@@ -57,31 +57,34 @@
 
     let commentListener = [];
 
-    const fetchPromis = fetch(
-      "https://wedev-api.sky.pro/api/v1/apetrimihai/comments",
-      {
-        method: "GET",
-      }
-    );
+    const fetchGet = () => {
+      const fetchPromis = fetch(
+        "https://wedev-api.sky.pro/api/v1/apetrimihai/comments",
+        {
+          method: "GET",
+        }
+      );
 
-    fetchPromis.then((response) => {
-      response.json().then((responseData) => {
-        const appComments = responseData.comments.map((comment) => {
-          return {
-            name: comment.author.name,
-            date: getCurrentDate(comment.date),
-            text: comment.text,
-            likes: comment.likes,
-            isLiked: false,
-            isEdited: true,
-            isLoading: true,
-          };
+      fetchPromis.then((response) => {
+        response.json().then((responseData) => {
+          const appComments = responseData.comments.map((comment) => {
+            return {
+              name: comment.author.name,
+              date: getCurrentDate(comment.date),
+              text: comment.text,
+              likes: comment.likes,
+              isLiked: false,
+              isEdited: true,
+              isLoading: true,
+            };
+          });
+          commentListener = appComments;
+          renderTask();
         });
-        commentListener = appComments;
-        renderTask();
       });
-    });
+    };
 
+    fetchGet();
     const renderTask = () => {
       const commentHtml = commentListener
         .map((comment, index) => {
@@ -209,14 +212,15 @@
         response.json().then((responseData) => {
           commentListener = responseData.comments;
         });
+
         nameInput.value = "";
         commentInput.value = "";
         nameInput.style.backgroundColor = "";
         nameInput.placeholder = "Введите ваше имя";
         commentInput.style.backgroundColor = "";
         commentInput.placeholder = "Введите ваш комментарий";
-        renderTask();
       });
+      fetchGet();
     });
 
     nameInput.addEventListener("input", () => {
