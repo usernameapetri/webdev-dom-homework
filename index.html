@@ -8,9 +8,15 @@
 
   <body>
     <div class="container">
+      <div class="load-comments">
+        <p class="loading-text">Пожалуйста подождите,загружаю комментарий</p>
+      </div>
       <ul class="comments" id="commentBlock">
         <!-- Список рендериться из JS  -->
       </ul>
+      <div class="loading-addForm">
+        <p class="loading-text">Коментарий добавляеться...</p>
+      </div>
       <div class="add-form">
         <input
           type="text"
@@ -36,6 +42,7 @@
   </body>
 
   <script>
+    "use strict";
     const nameInput = document.getElementById("nameInput");
     const commentInput = document.getElementById("commentInput");
     const remuveButton = document.getElementById("remuveButton");
@@ -43,6 +50,11 @@
     const commentElement = document.querySelectorAll(".comments");
     const commentList = document.getElementById("commentBlock");
     const editImput = document.querySelectorAll(".edit-input");
+    const addForm = document.querySelector(".add-form");
+    const loadingForm = document.querySelector(".loading-addForm");
+    const loadingText = document.querySelector(".loading-text");
+    const loadingPage = document.querySelector(".load-comments");
+    const likeBtn = document.querySelectorAll(".like-button");
 
     const getCurrentDate = () => {
       const currentDate = new Date();
@@ -58,19 +70,17 @@
     let commentListener = [];
 
     const fetchGet = () => {
-      const fetchPromis = fetch(
-        "https://wedev-api.sky.pro/api/v1/apetrimihai/comments",
-        {
-          method: "GET",
-        }
-      );
-
-      fetchPromis.then((response) => {
-        response.json().then((responseData) => {
+      return fetch("https://wedev-api.sky.pro/api/v1/apetrimihai/comments", {
+        method: "GET",
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((responseData) => {
           const appComments = responseData.comments.map((comment) => {
             return {
               name: comment.author.name,
-              date: getCurrentDate(comment.date),
+              date: comment.date,
               text: comment.text,
               likes: comment.likes,
               isLiked: false,
@@ -79,9 +89,9 @@
             };
           });
           commentListener = appComments;
+          loadingPage.style.display = "none";
           renderTask();
         });
-      });
     };
 
     fetchGet();
@@ -92,38 +102,38 @@
             comment.isLiked = "-active-like";
           }
           return `
-      <li class="comment" data-comments=${index} >
-    <div class="comment-header">
-      <div>${comment.name}</div>
-      <div>${comment.date}</div>
-    </div>
-    <div class="comment-body">
-    ${
-      comment.isEdited
-        ? `<div class="comment-text" style="white-space:pre-line" data-coment=${index} data-text=${index}>
-      ${comment.text}
-    </div> `
-        : `<textarea
-  type="textarea"
-  class="add-form-text edit-input"
-  placeholder="Введите ваш коментарий"
-  rows="4"
-  data-text=${index}
->${comment.text}</textarea>`
-    }
-    <div class="comment-footer">
-    <button class = 'edit-btn' data-edit=${index}>
-              ${comment.isEdited ? "Редактировать" : "Сохранить"}
-            </button>
-      <div class="likes">
-        <span class="likes-counter ">${comment.likes}</span>
-        <button class="like-button ${
-          comment.isLiked
-        }" data-index="${index}"></button>
-      </div>
-    </div>
-  </li>
-  `;
+          <li class="comment" data-comments=${index} >
+        <div class="comment-header">
+          <div>${comment.name}</div>
+          <div>${comment.date}</div>
+        </div>
+        <div class="comment-body">
+        ${
+          comment.isEdited
+            ? `<div class="comment-text" style="white-space:pre-line" data-coment=${index} data-text=${index}>
+          ${comment.text}
+        </div> `
+            : `<textarea
+      type="textarea"
+      class="add-form-text edit-input"
+      placeholder="Введите ваш коментарий"
+      rows="4"
+      data-text=${index}
+    >${comment.text}</textarea>`
+        }
+        <div class="comment-footer">
+        <button class = 'edit-btn' data-edit=${index}>
+                  ${comment.isEdited ? "Редактировать" : "Сохранить"}
+                </button>
+          <div class="likes">
+            <span class="likes-counter ">${comment.likes}</span>
+            <button class="like-button ${
+              comment.isLiked
+            }" data-index="${index}"></button>
+          </div>
+        </div>
+      </li>
+      `;
         })
         .join("");
 
@@ -131,17 +141,24 @@
       const likeButtons = document.querySelectorAll(".like-button");
       likeButtons.forEach((button) => {
         button.addEventListener("click", (event) => {
-          event.stopPropagation();
-          const index = button.dataset.index;
-          const comment = commentListener[index];
-          if (!comment.isLiked) {
-            comment.isLiked = true;
-            comment.likes++;
-          } else {
-            comment.isLiked = false;
-            comment.likes--;
-          }
-          renderTask();
+          setTimeout(() => {
+            event.stopPropagation();
+            const index = button.dataset.index;
+            const comment = commentListener[index];
+            const likeBtn = likeButtons[index];
+
+            likeBtn.classList.add("-loading-like");
+
+            if (!comment.isLiked) {
+              comment.isLiked = true;
+              comment.likes++;
+            } else {
+              comment.isLiked = false;
+              comment.likes--;
+            }
+
+            renderTask();
+          }, 1000);
         });
       });
 
@@ -201,26 +218,33 @@
         addButton.style.backgroundColor = "gray";
         return;
       }
-
+      loadingForm.style.display = "block";
+      addForm.style.display = "none";
       fetch("https://wedev-api.sky.pro/api/v1/apetrimihai/comments", {
         method: "POST",
         body: JSON.stringify({
           name: nameInput.value,
           text: commentInput.value,
+          date: getCurrentDate(),
         }),
-      }).then((response) => {
-        response.json().then((responseData) => {
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((responseData) => {
           commentListener = responseData.comments;
+          nameInput.value = "";
+          commentInput.value = "";
+          nameInput.style.backgroundColor = "";
+          nameInput.placeholder = "Введите ваше имя";
+          commentInput.style.backgroundColor = "";
+          commentInput.placeholder = "Введите ваш комментарий";
+          return fetchGet();
+        })
+        .finally(() => {
+          addForm.style.display = "flex";
+          loadingForm.style.display = "none";
         });
-
-        nameInput.value = "";
-        commentInput.value = "";
-        nameInput.style.backgroundColor = "";
-        nameInput.placeholder = "Введите ваше имя";
-        commentInput.style.backgroundColor = "";
-        commentInput.placeholder = "Введите ваш комментарий";
-        fetchGet();
-      });
     });
 
     nameInput.addEventListener("input", () => {
