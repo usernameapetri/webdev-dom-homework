@@ -105,7 +105,9 @@
           <li class="comment" data-comments=${index} >
         <div class="comment-header">
           <div>${comment.name}</div>
-          <div>${comment.date}</div>
+          <div>${
+            comment.date ? new Date(comment.date).toLocaleString() : ""
+          }</div>
         </div>
         <div class="comment-body">
         ${
@@ -220,43 +222,57 @@
       }
       loadingForm.style.display = "block";
       addForm.style.display = "none";
-      fetch("https://wedev-api.sky.pro/api/v1/apetrimihai/comments", {
-        method: "POST",
-        body: JSON.stringify({
-          name: nameInput.value,
-          text: commentInput.value,
-          date: getCurrentDate(),
-        }),
-      })
-        .then((response) => {
-          return response.json();
-        })
-        .then((responseData) => {
-          commentListener = responseData.comments;
-          nameInput.value = "";
-          commentInput.value = "";
-          nameInput.style.backgroundColor = "";
-          nameInput.placeholder = "Введите ваше имя";
-          commentInput.style.backgroundColor = "";
-          commentInput.placeholder = "Введите ваш комментарий";
-          return fetchGet();
-        })
-        .finally(() => {
-          addForm.style.display = "flex";
-          loadingForm.style.display = "none";
-        });
-    });
 
-    nameInput.addEventListener("input", () => {
-      addButton.disabled = false;
-      addButton.style.backgroundColor = "";
-      nameInput.style.backgroundColor = "";
-    });
+      const fetchPost = () => {
+        fetch("https://wedev-api.sky.pro/api/v1/apetrimihai/comments", {
+          method: "POST",
+          body: JSON.stringify({
+            name: nameInput.value,
+            text: commentInput.value,
+            date: getCurrentDate(),
+            forceError: true,
+          }),
+        })
+          .then((response) => {
+            if (response.status === 201) {
+              return response.json();
+            } else {
+              throw new Error("Сервер упал");
+            }
+          })
+          .then((responseData) => {
+            commentListener = responseData.comments;
+            nameInput.value = "";
+            commentInput.value = "";
+            nameInput.style.backgroundColor = "";
+            nameInput.placeholder = "Введите ваше имя";
+            commentInput.style.backgroundColor = "";
+            commentInput.placeholder = "Введите ваш комментарий";
+            return fetchGet();
+          })
+          .finally(() => {
+            addForm.style.display = "flex";
+            loadingForm.style.display = "none";
+            nameInput.addEventListener("input", () => {
+              addButton.disabled = false;
+              addButton.style.backgroundColor = "";
+              nameInput.style.backgroundColor = "";
+            });
 
-    commentInput.addEventListener("input", () => {
-      addButton.disabled = false;
-      addButton.style.backgroundColor = "";
-      commentInput.style.backgroundColor = "";
+            commentInput.addEventListener("input", () => {
+              addButton.disabled = false;
+              addButton.style.backgroundColor = "";
+              commentInput.style.backgroundColor = "";
+            });
+          })
+          .catch((error) => {
+            alert("Кажеться что то пошло не так, попробуй позже🗿");
+            addButton.disabled = false;
+            console.warn("Error");
+            fetchPost();
+          });
+      };
+      fetchPost();
     });
   </script>
 </html>
