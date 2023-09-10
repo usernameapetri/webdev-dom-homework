@@ -1,7 +1,14 @@
 import { fetchGet } from "../main.js";
 import { renderLogin } from "./loginPage.js";
-import { registration, setToken, setUserName, token, userName } from "./api.js";
-
+import {
+  registration,
+  setToken,
+  setUserName,
+  token,
+  userName,
+  login,
+} from "./api.js";
+import _ from "lodash";
 export const renderRegistration = () => {
   const appElement = document.getElementById("app");
   const regHtml = ` <div class="container">
@@ -57,7 +64,7 @@ export const renderRegistration = () => {
     passwordInputElement.disabled = true;
 
     registration({
-      name: nameInputElement.value,
+      name: _.capitalize(nameInputElement.value),
       login: loginInputElement.value,
       password: passwordInputElement.value,
     })
@@ -69,7 +76,19 @@ export const renderRegistration = () => {
           regbtnElement.style.color = "green";
         }, 2000);
         setTimeout(() => {
-          fetchGet();
+          login({
+            login: loginInputElement.value,
+            password: passwordInputElement.value,
+          }).then((responseData) => {
+            setToken(responseData.user.token);
+            setUserName(responseData.user.name);
+            window.localStorage.setItem(
+              "storageToken",
+              responseData.user.token
+            );
+            window.localStorage.setItem("userName", responseData.user.name);
+            return fetchGet();
+          });
         }, 2500);
         if (responseData.status === 400) {
           throw new Error("Что то пошло не так");

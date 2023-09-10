@@ -1,6 +1,6 @@
 import { login, setToken, setUserName, token, userName } from "./api.js";
 import { renderRegistration } from "./registrationpage.js";
-
+import _ from "lodash";
 export const renderLogin = ({ fetchGet }) => {
   const appElement = document.getElementById("app");
   const loginHtml = `<div class="container">
@@ -53,7 +53,7 @@ export const renderLogin = ({ fetchGet }) => {
         window.localStorage.setItem("userName", responseData.user.name);
         return fetchGet();
       })
-      .then((fetchResponse) => {
+      .then(() => {
         btnElement.textContent = "Подождите";
         btnElement.style.color = "gray";
       });
