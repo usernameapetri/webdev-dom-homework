@@ -212,3 +212,37 @@ body {
   width: 30px;
   width: 30px;
 }
+
+.logForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.logForm__input {
+  width: auto;
+}
+
+.logPage__btn {
+  display: flex;
+  flex-direction: column;
+}
+
+.registrationLink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  font-family: Helvetica;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.authorization-block {
+  margin-top: 25px;
+}
+
+.add-form-authorization {
+  color: #ffffff;
+}
