@@ -2,7 +2,7 @@ import { postApi, userName, token } from "./api.js";
 import { getCurrentDate, sanitizeHtml } from "./utiliti.js";
 import { fetchGet } from "../main.js";
 import { renderLogin } from "./loginPage.js";
-
+import { format } from "date-fns";
 const commentList = document.getElementById("commentBlock");
 
 export const renderTask = ({ commentListener }) => {
@@ -12,13 +12,13 @@ export const renderTask = ({ commentListener }) => {
       if (comment.isLiked === true) {
         comment.isLiked = "-active-like";
       }
+
+      const createDate = format(new Date(comment.date), "yyyy-MM-dd hh.mm.ss");
       return `
         <li class="comment" data-comments=${index} >
       <div class="comment-header">
         <div>${sanitizeHtml(comment.name)}</div>
-        <div>${
-          comment.date ? new Date(comment.date).toLocaleString() : ""
-        }</div>
+        <div>${createDate}</div>
       </div>
       <div class="comment-body">
       ${
