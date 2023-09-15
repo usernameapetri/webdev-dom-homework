@@ -1,8 +1,7 @@
-import { login, setToken, setUserName, token, userName } from "./api.js";
-import { renderRegistration } from "./registrationpage.js";
-import _ from "lodash";
+import { login, setToken, setUserName } from './api.js';
+import { renderRegistration } from './registrationpage.js';
 export const renderLogin = ({ fetchGet }) => {
-  const appElement = document.getElementById("app");
+  const appElement = document.getElementById('app');
   const loginHtml = `<div class="container">
     <div class="add-form">
       <p class="logPage__headung">Форма входа</p>
@@ -32,16 +31,16 @@ export const renderLogin = ({ fetchGet }) => {
   </div>`;
   appElement.innerHTML = loginHtml;
 
-  const regbtnElement = document.getElementById("reg-btn");
-  const btnElement = document.getElementById("login-btn");
-  const loginInputElement = document.getElementById("login-input");
-  const passwordInputElement = document.getElementById("password-input");
+  const regbtnElement = document.getElementById('reg-btn');
+  const btnElement = document.getElementById('login-btn');
+  const loginInputElement = document.getElementById('login-input');
+  const passwordInputElement = document.getElementById('password-input');
 
-  regbtnElement.addEventListener("click", () => {
+  regbtnElement.addEventListener('click', () => {
     renderRegistration({ renderLogin });
   });
 
-  btnElement.addEventListener("click", () => {
+  btnElement.addEventListener('click', () => {
     login({
       login: loginInputElement.value,
       password: passwordInputElement.value,
@@ -49,13 +48,13 @@ export const renderLogin = ({ fetchGet }) => {
       .then((responseData) => {
         setToken(responseData.user.token);
         setUserName(responseData.user.name);
-        window.localStorage.setItem("storageToken", responseData.user.token);
-        window.localStorage.setItem("userName", responseData.user.name);
+        window.localStorage.setItem('storageToken', responseData.user.token);
+        window.localStorage.setItem('userName', responseData.user.name);
         return fetchGet();
       })
       .then(() => {
-        btnElement.textContent = "Подождите";
-        btnElement.style.color = "gray";
+        btnElement.textContent = 'Подождите';
+        btnElement.style.color = 'gray';
       });
   });
 };
