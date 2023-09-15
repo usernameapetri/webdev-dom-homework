@@ -1,22 +1,31 @@
 {
-  "name": "lessons_todo",
-  "version": "1.0.0",
-  "description": "A sample project",
-  "main": "/main.js",
-  "directories": {
-    "lib": "lib"
-  },
-  "scripts": {
-    "dev": "webpack --mode development --watch"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "date-fns": "^2.30.0",
-    "lodash": "^4.17.21"
-  },
-  "devDependencies": {
-    "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
-  }
+    "name": "lessons_todo",
+    "version": "1.0.0",
+    "description": "A sample project",
+    "main": "/main.js",
+    "directories": {
+        "lib": "lib"
+    },
+    "scripts": {
+        "dev": "webpack --mode development --watch",
+        "format": "prettier --write ./modules/",
+        "lint:js": "eslint ./modules/**/*.js",
+        "prepare": "husky install",
+        "lint": "npm run lint:js "
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "date-fns": "^2.30.0",
+        "lodash": "^4.17.21"
+    },
+    "devDependencies": {
+        "eslint": "^8.49.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "husky": "^8.0.3",
+        "prettier": "^3.0.3",
+        "webpack": "^5.88.2",
+        "webpack-cli": "^5.1.4"
+    }
 }

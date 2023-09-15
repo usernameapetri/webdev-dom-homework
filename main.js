@@ -1,5 +1,5 @@
-import { getApi, setToken, setUserName } from "./modules/api.js";
-import { renderTask } from "./modules/renderComments.js";
+import { getApi, setToken, setUserName } from './modules/api.js';
+import { renderTask } from './modules/renderComments.js';
 let commentListener = [];
 
 export const fetchGet = () => {
@@ -16,8 +16,8 @@ export const fetchGet = () => {
       };
     });
     commentListener = appComments;
-    setToken(window.localStorage.getItem("storageToken"));
-    setUserName(window.localStorage.getItem("userName"));
+    setToken(window.localStorage.getItem('storageToken'));
+    setUserName(window.localStorage.getItem('userName'));
     renderTask({ commentListener });
   });
 };

@@ -1,17 +1,10 @@
 import { fetchGet } from "../main.js";
 import { renderLogin } from "./loginPage.js";
-import {
-  registration,
-  setToken,
-  setUserName,
-  token,
-  userName,
-  login,
-} from "./api.js";
+import { registration, setToken, setUserName, login } from "./api.js";
 import _ from "lodash";
 export const renderRegistration = () => {
-  const appElement = document.getElementById("app");
-  const regHtml = ` <div class="container">
+    const appElement = document.getElementById("app");
+    const regHtml = ` <div class="container">
   <div class="add-form">
     <p class="logPage__headung">Форма регистрации</p>
     <form class="logForm" action="">
@@ -44,71 +37,74 @@ export const renderRegistration = () => {
   </div>
  </div>`;
 
-  appElement.innerHTML = regHtml;
-  const nameInputElement = document.getElementById("name-input");
-  const loginInputElement = document.getElementById("login-input");
-  const passwordInputElement = document.getElementById("password-input");
-  const enterBtnElement = document.getElementById("enter-btn");
-  const regbtnElement = document.getElementById("reg-btn");
+    appElement.innerHTML = regHtml;
+    const nameInputElement = document.getElementById("name-input");
+    const loginInputElement = document.getElementById("login-input");
+    const passwordInputElement = document.getElementById("password-input");
+    const enterBtnElement = document.getElementById("enter-btn");
+    const regbtnElement = document.getElementById("reg-btn");
 
-  enterBtnElement.addEventListener("click", () => {
-    renderLogin({ fetchGet });
-  });
+    enterBtnElement.addEventListener("click", () => {
+        renderLogin({ fetchGet });
+    });
 
-  regbtnElement.addEventListener("click", () => {
-    regbtnElement.textContent = "Отправка данных...";
-    regbtnElement.style.color = "gray";
-    regbtnElement.disabled = true;
-    nameInputElement.disabled = true;
-    loginInputElement.disabled = true;
-    passwordInputElement.disabled = true;
+    regbtnElement.addEventListener("click", () => {
+        regbtnElement.textContent = "Отправка данных...";
+        regbtnElement.style.color = "gray";
+        regbtnElement.disabled = true;
+        nameInputElement.disabled = true;
+        loginInputElement.disabled = true;
+        passwordInputElement.disabled = true;
 
-    registration({
-      name: _.capitalize(nameInputElement.value),
-      login: loginInputElement.value,
-      password: passwordInputElement.value,
-    })
-      .then((responseData) => {
-        setToken(responseData.user.token);
-        setUserName(responseData.user.name);
-        setTimeout(() => {
-          regbtnElement.textContent = "Регистрация прошла успешно ✅";
-          regbtnElement.style.color = "green";
-        }, 2000);
-        setTimeout(() => {
-          login({
+        registration({
+            name: _.capitalize(nameInputElement.value),
             login: loginInputElement.value,
-            password: passwordInputElement.value,
-          }).then((responseData) => {
-            setToken(responseData.user.token);
-            setUserName(responseData.user.name);
-            window.localStorage.setItem(
-              "storageToken",
-              responseData.user.token
-            );
-            window.localStorage.setItem("userName", responseData.user.name);
-            return fetchGet();
-          });
-        }, 2500);
-        if (responseData.status === 400) {
-          throw new Error("Что то пошло не так");
-        }
-      })
-      .catch((error) => {
-        if (error.message === "Что то пошло не так") {
-          alert("💢Что то пошло не так, попробуйте позже💢 ");
-          nameInputElement.value = "";
-          loginInputElement.value = "";
-          passwordInputElement.value = "";
-          setTimeout(() => {
-            regbtnElement.disabled = false;
-            nameInputElement.disabled = false;
-            loginInputElement.disabled = false;
-            passwordInputElement.disabled = false;
-            regbtnElement.textContent = "Зарегистрироваться";
-            regbtnElement.style.color = "black";
-          }, 2000);
-        }
-      });
-  });
+            password: passwordInputElement.value
+        })
+            .then((responseData) => {
+                setToken(responseData.user.token);
+                setUserName(responseData.user.name);
+                setTimeout(() => {
+                    regbtnElement.textContent = "Регистрация прошла успешно ✅";
+                    regbtnElement.style.color = "green";
+                }, 2000);
+                setTimeout(() => {
+                    login({
+                        login: loginInputElement.value,
+                        password: passwordInputElement.value
+                    }).then((responseData) => {
+                        setToken(responseData.user.token);
+                        setUserName(responseData.user.name);
+                        window.localStorage.setItem(
+                            "storageToken",
+                            responseData.user.token
+                        );
+                        window.localStorage.setItem(
+                            "userName",
+                            responseData.user.name
+                        );
+                        return fetchGet();
+                    });
+                }, 2500);
+                if (responseData.status === 400) {
+                    throw new Error("Что то пошло не так");
+                }
+            })
+            .catch((error) => {
+                if (error.message === "Что то пошло не так") {
+                    alert("💢Что то пошло не так, попробуйте позже💢 ");
+                    nameInputElement.value = "";
+                    loginInputElement.value = "";
+                    passwordInputElement.value = "";
+                    setTimeout(() => {
+                        regbtnElement.disabled = false;
+                        nameInputElement.disabled = false;
+                        loginInputElement.disabled = false;
+                        passwordInputElement.disabled = false;
+                        regbtnElement.textContent = "Зарегистрироваться";
+                        regbtnElement.style.color = "black";
+                    }, 2000);
+                }
+            });
+    });
 };
